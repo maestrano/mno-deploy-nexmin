@@ -1,0 +1,214 @@
+#=======================================================================
+#=======================================================================
+# Nex! configuration
+# This file is used to configure the Nex! orchestrator and describe
+# the underlying infrastructure(s) to be managed.
+#=======================================================================
+#=======================================================================
+
+# Allow Nex! to receive webhooks from Github for continuous
+# deployment.
+# Disabled by default.
+# You can enable webhooks by setting this variable to the
+# Nex! host (e.g. api-nex.uat.nexmin.maestrano.io)
+scm_webhook_host: ~
+
+# List of github organizations allowed to use the platform
+# as regular users
+# Only required if Github SSO is enabled
+authorized_github_orgs:
+  - maestrano
+
+# List of github organizations allowed to manage the platform
+# Users from these organisations will be setup as :ops or :admin for the
+# platform based on their role inside the github organization ('admin' or
+# other)
+# Only required if Github SSO is enabled
+admin_github_orgs:
+  - maestrano
+
+# The private DNS should be accessible from the VPC / Private Network
+# in which racks are launched
+nex_internal_dns:
+  proto: https
+  host: api-nex.uat.nexmin.maestrano.io
+
+# Job configuration parameters such as how often recurring jobs
+# should run
+jobs:
+  action_job_polling_interval: 10 #seconds
+  auto_scale_job_interval: 10 #minutes
+  auto_backup_job_interval: 360 #minutes
+  grid_monitoring_job_interval: 3600 #seconds = 1h
+
+# Email to use for notification emails (e.g.: monitoring events)
+alerting_notification_email: it@maestrano.com
+
+# Cube DNS configuration: under whhich apps are launched
+# Used by the routing grid to optimize traffic routing
+app_subdomain: uat.nexmin.maestrano.io
+
+# Where to redirect users on error or when
+# the application is not found or not started
+# Used by the routing infrastrure
+web_error_redirect_domain: example.com
+web_nf_redirect_domain: https://example.com/loading/:host
+
+# Specify the default platform adapter
+# Available options: aws, azure, on_premise, vagrant
+default_platform_provider: azure
+
+# Disable use of proxy protocol on routing mesh
+# Proxy protocol should only be enabled on AWS at this stage
+routing_proxy_protocol_disabled: true
+
+# Specify which regions are currently managed by Nex!
+regions:
+  - 'southeastasia'
+
+# Example for AWS
+# regions:
+#   - 'ap-southeast-1'
+
+# Gateway servers. Used as Jump host and NAT.
+gateway:
+  nat:
+    type: 'Standard_F8s'
+    key_pair: ubuntu
+    ssh_user: ubuntu
+    security_group:
+      southeastasia: 'nex-grid-uat-sea-sg-nat'
+    ami:
+      southeastasia: '14.04.5-LTS'
+    zone:
+      southeastasia: 'southeastasia'
+    vpc:
+      southeastasia: 'nex-grid-uat-sea-vnet'
+    subnet:
+      southeastasia: 'tier1-public'
+    static_ip:
+      southeastasia: '0.0.0.0'
+
+# Example for AWS
+# gateway:
+#   nat:
+#     type: 't2.micro'
+#     security_group: 'nex-nat'
+#     key_pair: my-keypair
+#     ssh_user: ubuntu
+#     os: ubuntu
+#     ami:
+#       ap-southeast-1: 'ami-aaaaa'
+#     zone:
+#       ap-southeast-1: 'ap-southeast-1a'
+#     vpc:
+#       ap-southeast-1: 'vpc-aaaaa'
+#     subnet:
+#       ap-southeast-1: 'subnet-aaaaa'
+#     static_ip:
+#       ap-southeast-1: '0.0.0.0'
+
+# Routing servers. Accept incoming web traffic.
+routing:
+  nginx:
+    type: 'Standard_F1s'
+    key_pair: ubuntu
+    ssh_user: ubuntu
+    security_group:
+      southeastasia: 'nex-grid-uat-sea-sg-routing'
+    ami:
+      southeastasia: '14.04.5-LTS'
+    zone:
+      southeastasia: 'southeastasia'
+    vpc:
+      southeastasia: 'nex-grid-uat-sea-vnet'
+    subnet:
+      southeastasia: 'tier2-routing'
+    elb:
+      southeastasia: 'nex-grid-uat-sea-elb'
+
+# Example for AWS
+# routing:
+#   nginx:
+#     type: 't2.small'
+#     security_group: 'nex-routing'
+#     key_pair: my-keypair
+#     ssh_user: ubuntu
+#     ami:
+#       ap-southeast-1: 'ami-aaaaa'
+#     zone:
+#       ap-southeast-1: 'ap-southeast-1a'
+#     vpc:
+#       ap-southeast-1: 'vpc-aaaaa'
+#     subnet:
+#       ap-southeast-1: 'subnet-aaaaa'
+#     elb:
+#       ap-southeast-1: 'nex-routing-apse1'
+
+# Compute servers. Host dockerized applications.
+compute:
+  docker:
+    type: 'Standard_F1s'
+    key_pair: ubuntu
+    ssh_user: ubuntu
+    security_group:
+      southeastasia: 'nex-grid-uat-sea-sg-compute'
+    ami:
+      southeastasia: '14.04.5-LTS'
+    zone:
+      southeastasia: 'southeastasia'
+    vpc:
+      southeastasia: 'nex-grid-uat-sea-vnet'
+    subnet:
+      southeastasia: 'tier3-compute'
+
+# Example for AWS
+# compute:
+#   docker:
+#     type: 'm3.xlarge'
+#     security_group: 'nex-compute'
+#     key_pair: my-keypair
+#     ssh_user: ubuntu
+#     ami:
+#       ap-southeast-1: 'ami-aaaaa'
+#     zone:
+#       ap-southeast-1: 'ap-southeast-1a'
+#     vpc:
+#       ap-southeast-1: 'vpc-aaaaa'
+#     subnet:
+#       ap-southeast-1: 'subnet-aaaaa'
+
+# Storage servers. Host backups for persistent containers.
+storage:
+  rsync:
+    type: 'Standard_F1s'
+    storage_size: 1000 # 1TB
+    key_pair: ubuntu
+    ssh_user: ubuntu
+    security_group:
+      southeastasia: 'nex-grid-uat-sea-sg-storage'
+    ami:
+      southeastasia: '14.04.5-LTS' # Ubuntu
+    zone:
+      southeastasia: 'southeastasia'
+    vpc:
+      southeastasia: 'nex-grid-uat-sea-vnet'
+    subnet:
+      southeastasia: 'tier4-storage'
+
+# Example for AWS
+# storage:
+#   rsync:
+#     type: 't2.micro'
+#     storage_size: 1000 # 1TB
+#     security_group: 'nex-storage'
+#     key_pair: my-keypair
+#     ssh_user: ubuntu
+#     ami:
+#       ap-southeast-1: 'ami-aaaaa' # Ubuntu
+#     zone:
+#       ap-southeast-1: 'ap-southeast-1a'
+#     vpc:
+#       ap-southeast-1: 'vpc-aaaaa'
+#     subnet:
+#       ap-southeast-1: 'subnet-aaaaa'

@@ -1,0 +1,60 @@
+---
+#=======================================================================
+#=======================================================================
+# Application versions
+#=======================================================================
+#=======================================================================
+nex_version: v2.0.1
+nex_folder: releases
+
+#=======================================================================
+#=======================================================================
+# General Environment configuration
+#=======================================================================
+#=======================================================================
+environment_name: nexmin
+rails_environment: production
+
+timezone: Australia/Sydney
+
+sumologic:
+  skip: false
+
+# List of user SSH keys
+# ssh_users:
+#   - { name: "ubuntu", file: "files/public_keys/john.doe@corp.com" }
+#   - { name: "ubuntu", file: "files/public_keys/jack.doe@corp.com" }
+
+#=======================================================================
+#=======================================================================
+# Infrastructure configuration
+#=======================================================================
+#=======================================================================
+nex:
+  dns_record:
+    record: api-nex.prd.nexmin.maestrano.io
+
+rds:
+  skip: True
+  endpoint: some-mysql-endpoint.some-provider.com
+
+#=======================================================================
+#=======================================================================
+# Application Configuration
+#=======================================================================
+#=======================================================================
+
+# Nex! Configuration
+nex_config:
+  env_tag: production
+  region: "{{ aws_region }}"
+  public_dns:
+    scheme: https
+    host: "{{ nex.dns_record.record }}"
+  private_dns:
+    scheme: https
+    host: "{{ nex.dns_record.record }}"
+
+# Swapfile configuration
+swapfile_use_dd: True
+swapfile_size: "{{ (ansible_memtotal_mb)|int }}"
