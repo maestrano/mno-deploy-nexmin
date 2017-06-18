@@ -73,7 +73,7 @@ regions:
 # Gateway servers. Used as Jump host and NAT.
 gateway:
   nat:
-    type: 'Standard_F8s'
+    type: 'Standard_F1s'
     key_pair: ubuntu
     ssh_user: ubuntu
     security_group:
@@ -148,7 +148,7 @@ routing:
 # Compute servers. Host dockerized applications.
 compute:
   docker:
-    type: 'Standard_F1s'
+    type: 'Standard_F16s'
     key_pair: ubuntu
     ssh_user: ubuntu
     security_group:
