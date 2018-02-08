@@ -169,6 +169,7 @@ compute:
 #     security_group: 'nex-compute'
 #     key_pair: my-keypair
 #     ssh_user: ubuntu
+#     encrypted: true
 #     ami:
 #       ap-southeast-1: 'ami-aaaaa'
 #     zone:
@@ -177,6 +178,8 @@ compute:
 #       ap-southeast-1: 'vpc-aaaaa'
 #     subnet:
 #       ap-southeast-1: 'subnet-aaaaa'
+#     volume_encryption_key_id:
+#       ap-southeast-1: 'kms_key_id'
 
 # Storage servers. Host backups for persistent containers.
 storage:
@@ -204,6 +207,7 @@ storage:
 #     security_group: 'nex-storage'
 #     key_pair: my-keypair
 #     ssh_user: ubuntu
+#     encrypted: true
 #     ami:
 #       ap-southeast-1: 'ami-aaaaa' # Ubuntu
 #     zone:
@@ -212,3 +216,5 @@ storage:
 #       ap-southeast-1: 'vpc-aaaaa'
 #     subnet:
 #       ap-southeast-1: 'subnet-aaaaa'
+#     volume_encryption_key_id:
+#       ap-southeast-1: 'kms_key_id'
